@@ -9,7 +9,7 @@ A classic Tic Tac Toe game built with Vanilla JS.
 3. Win/Draw detection logic.
 4. Restart functionality.
 
-### Key Concepts Learned
+## Key Concepts Learned
 1. Module Pattern (IIFE).
 2. Factory Functions.
 3. Closures & Encapsulation.
