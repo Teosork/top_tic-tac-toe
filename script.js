@@ -27,7 +27,11 @@ const GameBoard = {
     checkDraw: function() {
    
         return !this.board.includes("");
-    }
+    },
+
+    reset: function() {
+    this.board = ["", "", "", "", "", "", "", "", ""];
+}
 };
 
 const createPlayer = (name, symbol) => {
@@ -43,6 +47,7 @@ const gameController = (function() {
     ];
 
     let activePlayer = players[0];
+    let gameOver = false;
 
     const switchPlayer = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -51,21 +56,55 @@ const gameController = (function() {
     const getActivePlayer = () => activePlayer;
 
     const playRound = (index) => {
+        if (gameOver) return;
         if (!GameBoard.marker(index, activePlayer.symbol)){
-            console.log("Can't insert your symbol in this cell, It's already occupied.");
-            return;
+            return "Can't insert your symbol in this cell, It's already occupied.";
         }
         if (GameBoard.checkWin(activePlayer.symbol)){
-            console.log(`${activePlayer.name} won the game!`);
-            return;
+            gameOver = true;
+            return `${activePlayer.name} won the game!`;
         }
         if (GameBoard.checkDraw()){
-            console.log("It's a tie game!");
-            return;
+            gameOver = true;
+            return "It's a tie game!";
         }
         switchPlayer();
-        console.log(`Next turn: ${activePlayer.name}`);
+        return null;
     };
 
-    return{ playRound, getActivePlayer };
+    const resetGame = () => {
+    GameBoard.reset();
+    activePlayer = players[0];
+    gameOver = false;
+    };
+
+    return{ playRound, getActivePlayer, resetGame };
+})();
+
+const displayController = (function(){
+    const squares = document.querySelectorAll('.square');
+    const statusDiv = document.querySelector('#status');
+    const resetBtn = document.querySelector('#reset-btn');
+
+    const updateScreen = (message) => {
+        const board = GameBoard.board;
+        squares.forEach((square, index) => {
+            square.textContent = board[index];
+        });
+        statusDiv.textContent = message ||`The turn of: ${gameController.getActivePlayer().name}`;
+    };
+
+    squares.forEach(square => {
+        square.addEventListener('click', (e) => {
+            const index = e.target.dataset.index;
+            const result = gameController.playRound(index);
+            updateScreen(result);
+        });
+    });
+    resetBtn.addEventListener('click', () => {
+        gameController.resetGame();
+        updateScreen();
+    });
+
+    return {updateScreen};
 })();
