@@ -3,6 +3,10 @@
     margin-top: 50px;
 }
 
+#setup-container {
+    padding: 2rem;
+}
+
 #board {
     display: grid;
     grid-template-columns: repeat(3, 100px);

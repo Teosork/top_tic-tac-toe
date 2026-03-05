@@ -46,6 +46,11 @@ const gameController = (function() {
     createPlayer('Player 2', 'O')
     ];
 
+    const setNames = (name1, name2) => {
+    players[0].name = name1 || "Player 1";
+    players[1].name = name2 || "Player 2";
+    };
+
     let activePlayer = players[0];
     let gameOver = false;
 
@@ -78,31 +83,47 @@ const gameController = (function() {
     gameOver = false;
     };
 
-    return{ playRound, getActivePlayer, resetGame };
+    return{ playRound, getActivePlayer, resetGame, setNames };
 })();
 
 const displayController = (function(){
     const squares = document.querySelectorAll('.square');
     const statusDiv = document.querySelector('#status');
     const resetBtn = document.querySelector('#reset-btn');
+    const startBtn = document.querySelector('#start-btn');
+    const winnerDisplay = document.querySelector('#winner-display');
+
+    startBtn.addEventListener('click', () => {
+    const n1 = document.querySelector('#p1-name').value;
+    const n2 = document.querySelector('#p2-name').value;
+    
+    gameController.setNames(n1, n2);
+    document.querySelector('#setup-container').style.display = 'none';
+    updateScreen();
+    });
 
     const updateScreen = (message) => {
         const board = GameBoard.board;
         squares.forEach((square, index) => {
             square.textContent = board[index];
         });
-        statusDiv.textContent = message ||`The turn of: ${gameController.getActivePlayer().name}`;
+        statusDiv.textContent = message ? "" : `The turn of: ${gameController.getActivePlayer().name}`;
     };
 
     squares.forEach(square => {
         square.addEventListener('click', (e) => {
             const index = e.target.dataset.index;
             const result = gameController.playRound(index);
+
+            if (result) {
+            winnerDisplay.textContent = result;
+        }
             updateScreen(result);
         });
     });
     resetBtn.addEventListener('click', () => {
         gameController.resetGame();
+        winnerDisplay.textContent = "";
         updateScreen();
     });
 

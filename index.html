@@ -9,7 +9,12 @@
 </head>
 <body>
     <div id="game-container">
-    <div id="status">The turn of: Player 1</div>
+    <div id="setup-container">
+        <input type="text" id="p1-name" placeholder="Player 1 (X)">
+        <input type="text" id="p2-name" placeholder="Player 2 (O)">
+        <button id="start-btn">Start Game</button>
+    </div>
+    <div id="status"></div>
     <div id="board">
         <div class="square" data-index="0"></div>
         <div class="square" data-index="1"></div>
@@ -21,6 +26,7 @@
         <div class="square" data-index="7"></div>
         <div class="square" data-index="8"></div>
     </div>
+    <h2 id="winner-display"></h2>
     <button id="reset-btn">Reset Game</button>
     </div>
 </body>
